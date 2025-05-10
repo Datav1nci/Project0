@@ -1,0 +1,13 @@
+Follow the "Django first, React later" approach
+Use Tailwind CSS as a common design system and utility classes regardless of whether the UI is rendered by Django templates or React components later on.
+
+
+Modularize: Split into modules/classes for better organization.
+Robust Error Handling: Use specific exceptions and logging.
+Secure Data: Encrypt sensitive data, sanitize inputs, and use environment variables.
+Improve GUI: Simplify layout with tabs, reduce widget repetition.
+Optimize Performance: Cache metrics, use pathlib.
+Enhance Maintainability: Follow PEP 8, add docstrings, centralize constants.
+Add Tests: Write unit tests for critical functions.
+Support Localization: Implement gettext for French/English.
+Ensure Portability: Use cross-platform code for file operations.    
