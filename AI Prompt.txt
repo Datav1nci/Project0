@@ -1,6 +1,8 @@
+
 Follow the "Django first, React later" approach
 Use Tailwind CSS as a common design system and utility classes regardless of whether the UI is rendered by Django templates or React components later on.
 
+implement Rich SPA-style front-end, turn Django into a JSON-API (using Django REST Framework) to  pair it with a JS framework, React
 
 Modularize: Split into modules/classes for better organization.
 Robust Error Handling: Use specific exceptions and logging.

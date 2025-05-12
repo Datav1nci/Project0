@@ -1,0 +1,19 @@
+We've got some helpers to get you started with some common tasks — why not try one out? Alternatively, if you don't want any help, just click 'End tour'.
+
+I want to start learning Python
+https://www.pythonanywhere.com/user/DataVinci/task_helpers/start/1-start_python/
+
+I want to follow the Django Tutorial
+https://www.pythonanywhere.com/user/DataVinci/task_helpers/start/2-following-the-django-tutorial/
+
+I want to create a web application
+https://www.pythonanywhere.com/user/DataVinci/task_helpers/start/3-web_app/
+
+I have built a web app on my local PC and want to deploy it on PythonAnywhere
+https://www.pythonanywhere.com/user/DataVinci/task_helpers/start/4-deploy-local-web-app/
+
+I want to clone and hack on my GitHub project
+https://www.pythonanywhere.com/user/DataVinci/task_helpers/start/5-github/
+
+I want to check out the PythonAnywhere Education features
+https://www.pythonanywhere.com/user/DataVinci/task_helpers/start/6-education/
