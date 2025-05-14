@@ -1,0 +1,4 @@
+TypeScript code compiles to plain JavaScript, making it compatible with any JavaScript environment, such as browsers or Node.js. It's widely used for building large-scale, maintainable web applications.
+
+
+SupaDB
