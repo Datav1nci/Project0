@@ -2,3 +2,11 @@ TypeScript code compiles to plain JavaScript, making it compatible with any Java
 
 
 SupaDB
+
+
+
+TypeScript 
+Node.js
+for building large-scale, maintainable SaaS applications.
+
+Tailwind CSS framework
