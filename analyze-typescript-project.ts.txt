@@ -1,0 +1,97 @@
+import * as fs from 'fs/promises';
+import * as path from 'path';
+import { Project, SourceFile } from 'ts-morph';
+
+// Interface for the project report
+interface ProjectReport {
+  projectName: string;
+  dependencies: Record<string, string>;
+  devDependencies: Record<string, string>;
+  tsConfig: Record<string, any>;
+  entryPoints: string[];
+  modules: string[];
+  typesAndInterfaces: string[];
+}
+
+// Main function to analyze the project
+async function analyzeTypeScriptProject(projectPath: string): Promise<ProjectReport> {
+  const report: ProjectReport = {
+    projectName: '',
+    dependencies: {},
+    devDependencies: {},
+    tsConfig: {},
+    entryPoints: [],
+    modules: [],
+    typesAndInterfaces: [],
+  };
+
+  try {
+    // Read package.json
+    const packageJsonPath = path.join(projectPath, 'package.json');
+    const packageJson = JSON.parse(await fs.readFile(packageJsonPath, 'utf-8'));
+    report.projectName = packageJson.name || 'Unnamed Project';
+    report.dependencies = packageJson.dependencies || {};
+    report.devDependencies = packageJson.devDependencies || {};
+
+    // Read tsconfig.json
+    const tsConfigPath = path.join(projectPath, 'tsconfig.json');
+    report.tsConfig = JSON.parse(await fs.readFile(tsConfigPath, 'utf-8'));
+
+    // Initialize ts-morph project
+    const project = new Project({
+      tsConfigFilePath: tsConfigPath,
+    });
+
+    // Find entry points (e.g., index.ts, main.ts)
+    const potentialEntryPoints = ['index.ts', 'main.ts', 'src/index.ts', 'src/main.ts'];
+    for (const entry of potentialEntryPoints) {
+      const entryPath = path.join(projectPath, entry);
+      if (await fs.access(entryPath).then(() => true).catch(() => false)) {
+        report.entryPoints.push(entry);
+      }
+    }
+
+    // Analyze source files
+    const sourceFiles = project.getSourceFiles();
+    for (const sourceFile of sourceFiles) {
+      // Collect module paths
+      report.modules.push(sourceFile.getFilePath());
+
+      // Extract types and interfaces
+      const typeAliases = sourceFile.getTypeAliases().map(t => t.getName());
+      const interfaces = sourceFile.getInterfaces().map(i => i.getName());
+      report.typesAndInterfaces.push(...typeAliases, ...interfaces);
+    }
+
+    return report;
+  } catch (error) {
+    console.error('Error analyzing project:', error);
+    throw error;
+  }
+}
+
+// Function to print the report
+function printReport(report: ProjectReport) {
+  console.log(`# Project Analysis Report: ${report.projectName}`);
+  console.log('\n## Dependencies');
+  console.log(JSON.stringify(report.dependencies, null, 2));
+  console.log('\n## Dev Dependencies');
+  console.log(JSON.stringify(report.devDependencies, null, 2));
+  console.log('\n## TypeScript Configuration');
+  console.log(JSON.stringify(report.tsConfig, null, 2));
+  console.log('\n## Entry Points');
+  console.log(report.entryPoints.join('\n'));
+  console.log('\n## Modules');
+  console.log(report.modules.join('\n'));
+  console.log('\n## Types and Interfaces');
+  console.log(report.typesAndInterfaces.join('\n'));
+}
+
+// Run the analysis
+async function main() {
+  const projectPath = process.argv[2] || '.';
+  const report = await analyzeTypeScriptProject(projectPath);
+  printReport(report);
+}
+
+main().catch(console.error);
