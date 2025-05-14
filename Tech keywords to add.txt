@@ -10,3 +10,11 @@ Node.js
 for building large-scale, maintainable SaaS applications.
 
 Tailwind CSS framework
+Connect to Supabase
+
+
+What's next?
+Refine & Customize: Tweak the design, animations, and layouts via prompts or visual edits. Focus on the interactive chart and the tax calculation display.
+Master Prompting: Use "chat mode" to plan out the project, defining the modules for calculations, the GUI structure, and the expert advice logic. Use clear, detailed, and iterative prompts for best results.
+GitHub Sync: Transfer your project's code to GitHub for two-way sync of edits.
+Given the complexity of the calculations and the need for expert advice, consider using Supabase to persist user data, tax rules, and potentially even historical financial data. This will allow for more advanced features and personalized recommendations.
