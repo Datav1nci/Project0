@@ -1,10 +1,19 @@
+Next.js a React framework for
+Routing
+Server-side rendering (SSR)
+Static generation
+API routes
+You write your app using React, but Next.js makes it easier and faster to build production-grade apps.
+
+
+
 TypeScript code compiles to plain JavaScript, making it compatible with any JavaScript environment, such as browsers or Node.js. It's widely used for building large-scale, maintainable web applications.
 
 
 SupaDB
 
 
-
+React framework > Next.js
 TypeScript 
 Node.js
 for building large-scale, maintainable SaaS applications.
