@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "ts-morph": "^25.0.1",
+    "typescript": "^5.8.3"
+  },
+  "name": "project0",
+  "description": "Project0 Servs as Template of an web app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

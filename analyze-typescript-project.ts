@@ -7,7 +7,7 @@ interface ProjectReport {
   projectName: string;
   dependencies: Record<string, string>;
   devDependencies: Record<string, string>;
-  tsConfig: Record<string, any>;
+  tsConfig: Record<string, any> | string;
   entryPoints: string[];
   modules: string[];
   typesAndInterfaces: string[];
@@ -19,7 +19,7 @@ async function analyzeTypeScriptProject(projectPath: string): Promise<ProjectRep
     projectName: '',
     dependencies: {},
     devDependencies: {},
-    tsConfig: {},
+    tsConfig: 'No tsconfig.json found',
     entryPoints: [],
     modules: [],
     typesAndInterfaces: [],
@@ -33,14 +33,37 @@ async function analyzeTypeScriptProject(projectPath: string): Promise<ProjectRep
     report.dependencies = packageJson.dependencies || {};
     report.devDependencies = packageJson.devDependencies || {};
 
-    // Read tsconfig.json
+    // Check for tsconfig.json
     const tsConfigPath = path.join(projectPath, 'tsconfig.json');
-    report.tsConfig = JSON.parse(await fs.readFile(tsConfigPath, 'utf-8'));
+    let project: Project;
+    try {
+      report.tsConfig = JSON.parse(await fs.readFile(tsConfigPath, 'utf-8'));
+      project = new Project({
+        tsConfigFilePath: tsConfigPath,
+      });
+    } catch {
+      console.warn('Warning: tsconfig.json not found. Using default configuration.');
+      project = new Project({
+        compilerOptions: {
+          target: 'es2018',
+          module: 'commonjs',
+          lib: ['es2018'],
+          allowJs: true,
+        },
+      });
+    }
 
-    // Initialize ts-morph project
-    const project = new Project({
-      tsConfigFilePath: tsConfigPath,
-    });
+    // Find TypeScript files
+    const tsFiles = await findTypeScriptFiles(projectPath);
+    if (tsFiles.length === 0) {
+      console.warn('No TypeScript files found in the project.');
+      return report;
+    }
+
+    // Add TypeScript files to the project
+    for (const file of tsFiles) {
+      project.addSourceFileAtPath(file);
+    }
 
     // Find entry points (e.g., index.ts, main.ts)
     const potentialEntryPoints = ['index.ts', 'main.ts', 'src/index.ts', 'src/main.ts'];
@@ -70,6 +93,21 @@ async function analyzeTypeScriptProject(projectPath: string): Promise<ProjectRep
   }
 }
 
+// Helper function to find TypeScript files recursively
+async function findTypeScriptFiles(dir: string): Promise<string[]> {
+  const files: string[] = [];
+  const entries = await fs.readdir(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...await findTypeScriptFiles(fullPath));
+    } else if (entry.isFile() && (entry.name.endsWith('.ts') || entry.name.endsWith('.tsx'))) {
+      files.push(fullPath);
+    }
+  }
+  return files;
+}
+
 // Function to print the report
 function printReport(report: ProjectReport) {
   console.log(`# Project Analysis Report: ${report.projectName}`);
@@ -80,11 +118,11 @@ function printReport(report: ProjectReport) {
   console.log('\n## TypeScript Configuration');
   console.log(JSON.stringify(report.tsConfig, null, 2));
   console.log('\n## Entry Points');
-  console.log(report.entryPoints.join('\n'));
+  console.log(report.entryPoints.length ? report.entryPoints.join('\n') : 'None found');
   console.log('\n## Modules');
-  console.log(report.modules.join('\n'));
+  console.log(report.modules.length ? report.modules.join('\n') : 'None found');
   console.log('\n## Types and Interfaces');
-  console.log(report.typesAndInterfaces.join('\n'));
+  console.log(report.typesAndInterfaces.length ? report.typesAndInterfaces.join('\n') : 'None found');
 }
 
 // Run the analysis
